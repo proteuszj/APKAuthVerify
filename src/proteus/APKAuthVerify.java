@@ -33,8 +33,8 @@ import javax.crypto.Cipher;
  */
 public class APKAuthVerify {
 
-    static String signFilePath = "d:\\a.apk.sign";
-    static String certFilePath = "d:\\MPS_APK_AUTH.cer";
+    static String signFilePath = "a.apk.sign";
+    static String certFilePath = "MPS_APK_AUTH.cer";
     static String fileSha1 = "C7D7921148E9E947249BF911FA7010EE94EC2DB0";
     /**
      * @param args the command line arguments
@@ -46,9 +46,11 @@ public class APKAuthVerify {
         String s = br.readLine();
         String authDateString = s.substring(s.indexOf(':')+1).trim();
 
+
         s = br.readLine();
         String signatureString = s.substring(s.indexOf(':')+1).trim();
         byte[] signature = Base64.getDecoder().decode(signatureString);
+        out.println(toHexString(signature));
        
         MessageDigest sha1 = MessageDigest.getInstance("SHA1");
         byte[] signData = sha1.digest((fileSha1+authDateString).getBytes());
