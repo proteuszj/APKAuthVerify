@@ -12,20 +12,12 @@ import java.io.FileReader;
 import java.io.IOException;
 import static java.lang.System.out;
 import java.security.InvalidKeyException;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.PublicKey;
 import java.security.Signature;
 import java.security.SignatureException;
 import java.security.cert.*;
-import java.security.interfaces.RSAPublicKey;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Base64;
-import java.util.Date;
-import java.util.Locale;
-import javax.crypto.Cipher;
 
 /**
  *
@@ -46,27 +38,20 @@ public class APKAuthVerify {
         String s = br.readLine();
         String authDateString = s.substring(s.indexOf(':')+1).trim();
 
-
         s = br.readLine();
         String signatureString = s.substring(s.indexOf(':')+1).trim();
         byte[] signature = Base64.getDecoder().decode(signatureString);
-        out.println(toHexString(signature));
+//        out.println(toHexString(signature));
        
-        MessageDigest sha1 = MessageDigest.getInstance("SHA1");
-        byte[] signData = sha1.digest((fileSha1+authDateString).getBytes());
+        byte[] signData = (fileSha1+authDateString).getBytes();
         
         X509Certificate cert = (X509Certificate)CertificateFactory.getInstance("X.509").generateCertificate(new FileInputStream(certFilePath));
         
         Signature sig = Signature.getInstance("SHA1withRSA");
         sig.initVerify(cert);
         sig.update(signData);
-        boolean result = sig.verify(signature);
         
-        
-        
-        out.println(result);
-        out.println(authDateString.getBytes().length);
-//        out.printf("%02x", pubKey.getEncoded()[4]);
+        out.println(sig.verify(signature));
     }
     
     static String toHexString(byte[] value)
